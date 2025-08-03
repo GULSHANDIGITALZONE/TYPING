@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Test</title>
+  <link rel="shortcut icon" href="./ज्ञान की बाते logo 1.png" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #9eb3c7 url('./ज्ञान की बाते logo 1.png') no-repeat   fixed;
+      background-size: 220px 220px;
+      padding: 0;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    #quote {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+      min-height: 140px;
+      white-space: pre-wrap;
+    }
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+    }
+    .wrong {
+      background-color: red;
+      color: #fff;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+    }
+    #stats {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+      margin-right: 10px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    #level, #timeInputDiv {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    #timer {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>English Typing Test</h1>
+
+    <div style="font-size:1rem;">
+      <a href="mailto:gulshankumardariyapur85885@gmail.com" style="position: fixed; bottom: 10px; right: 10px;"><img style="width: 80px; height: auto; border-radius: 50%;" src="./smartparcel-mail.gif" alt=""></a>
+    </div>
+  </div>
+  <div id="level">
+    <label for="levelSelect">Select Level:</label>
+    <select id="levelSelect">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+  <div id="timeInputDiv">
+    <label for="testTime">Enter Time (seconds):</label>
+    <input type="number" id="testTime" min="60" max="600" value="300" />
+  </div>
+  <div id="timer">Time left: 0s</div>
+  <div id="quote">Click Start to load a paragraph...</div>
+  <textarea id="input" placeholder="Start typing here..." disabled></textarea>
+  <div style="text-align: center;">
+    <button class="btn" onclick="startTest()">Start Test</button>
+    <button class="btn" onclick="endTest()">Submit</button>
+    <button class="btn" onclick="resetTest()">Restart</button>
+  </div>
+  <div id="stats"></div>
+
+  <script>
+    const paragraphs = {
+      easy: [
+        "The quick brown fox jumps over the lazy dog again and again without any stop until it got tired and slept. Typing is a very important skill in today's digital world and everyone should practice to improve their typing. Students use computers for assignments, exams, and communication with teachers and friends using keyboards. Typing tests are fun and improve your speed over time if you keep practicing regularly and consistently.",
+        "Practice daily to improve your typing speed and Typing is an important skill in today’s digital world. Every student, teacher, or office worker uses a computer or mobile. Typing helps us complete tasks quickly. If we know how to type fast and correctly, we can save a lot of time. Many people learn to type by practicing every day. It is not hard to learn typing. With focus and practice, anyone can become good at it. Typing games and tests are also available online. They help us learn in a fun way. So, let us start typing every day and improve our speed and accuracy easily.. Consistent effort and focus can lead to rapid progress. Mistakes are proof that you are trying and learning. The more you type, the better you get at it. Typing is not just about speed, but also about accuracy and comfort.",
+        "Typing with all fingers is known as touch typing. It is the best way to type fast. At first, it may feel difficult, but over time, it becomes natural. Place your fingers on the home row keys and keep your eyes on the screen. Try not to look at the keyboard. This helps you build muscle memory. Typing fast is helpful in school, jobs, and exams. It also improves your confidence. Start with small sentences and increase the length day by day. Remember, practice is the key to success in typing. Keep typing and stay focused.",
+      ],
+      medium: [
+        "Improving typing speed and accuracy requires regular practice, patience, and the ability to concentrate on the task. People working in offices, especially those in data entry or content creation, must type efficiently for better output. While learning to type, maintaining good posture and using the correct fingers can prevent injuries and fatigue. One must avoid looking at the keyboard and develop muscle memory for typing faster."
+      ],
+      hard: [
+        "Touch typing is a technique that helps individuals type without looking at the keyboard, improving their efficiency and speed. Those aiming to become transcriptionists or coders should develop excellent typing skills and learn to minimize their errors. In competitive exams and timed tasks, typing speed can often make a significant difference in completing all questions. Building accuracy while typing is as important as speed, especially in professional work environments."
+      ]
+    };
+
+    let quoteText = "";
+    let quoteWords = [];
+    let currentIndex = 0;
+    let startTime;
+    let countdown;
+    let timeLeft = 0;
+    let isRunning = false;
+
+    const quoteDiv = document.getElementById("quote");
+    const input = document.getElementById("input");
+    const statsDiv = document.getElementById("stats");
+    const levelSelect = document.getElementById("levelSelect");
+    const timeInput = document.getElementById("testTime");
+    const timerDisplay = document.getElementById("timer");
+
+    function startTest() {
+      const level = levelSelect.value;
+      const list = paragraphs[level];
+      quoteText = list[Math.floor(Math.random() * list.length)];
+      quoteWords = quoteText.split(/\s+/);
+      input.value = "";
+      input.disabled = false;
+      input.focus();
+      statsDiv.textContent = "";
+      startTime = new Date();
+      currentIndex = 0;
+      isRunning = true;
+      timeLeft = parseInt(timeInput.value) || 300;
+      highlightWord(currentIndex);
+
+      updateTimerDisplay();
+      clearInterval(countdown);
+      countdown = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          endTest();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerDisplay.textContent = `Time left: ${timeLeft}s`;
+    }
+
+    function highlightWord(index) {
+      const words = quoteWords.map((word, i) => {
+        if (i === index) return `<span class="highlight">${word}</span>`;
+        return word;
+      });
+      quoteDiv.innerHTML = words.join(" ");
+    }
+
+    input.addEventListener("input", () => {
+      if (!isRunning) return;
+
+      const typed = input.value;
+      const typedWords = typed.trim().split(" ");
+      const currentWordTyped = typedWords[currentIndex] || "";
+      const targetWord = quoteWords[currentIndex] || "";
+
+      // If space pressed, move forward
+      if (typed.endsWith(" ")) {
+        if (currentWordTyped.trim() !== "") {
+          currentIndex++;
+        }
+        input.value = typedWords.slice(0, currentIndex).join(" ") + " ";
+      }
+
+      const words = quoteWords.map((word, i) => {
+        if (i < currentIndex) {
+          return (typedWords[i] === word)
+            ? word
+            : `<span class="wrong">${word}</span>`;
+        }
+        if (i === currentIndex) {
+          if (word.startsWith(currentWordTyped)) {
+            return `<span class="highlight">${word}</span>`;
+          } else {
+            return `<span class="highlight wrong">${word}</span>`;
+          }
+        }
+        return word;
+      });
+
+      quoteDiv.innerHTML = words.join(" ");
+    });
+
+    function resetTest() {
+      input.value = "";
+      input.disabled = true;
+      quoteDiv.textContent = "Click Start to load a paragraph...";
+      statsDiv.textContent = "";
+      quoteText = "";
+      currentIndex = 0;
+      isRunning = false;
+      clearInterval(countdown);
+      timerDisplay.textContent = "Time left: 0s";
+    }
+
+    function endTest() {
+      if (!isRunning || !startTime) return;
+      const endTime = new Date();
+      const timeTaken = (endTime - startTime) / 1000;
+      const typed = input.value.trim();
+      const typedWords = typed.split(/\s+/);
+
+      let correctCount = 0;
+      let wrongWords = [];
+
+      for (let i = 0; i < typedWords.length; i++) {
+        if (typedWords[i] === quoteWords[i]) {
+          correctCount++;
+        } else {
+          wrongWords.push(`<tr><td>${i + 1}</td><td>'${typedWords[i] || ""}'</td><td>'${quoteWords[i] || ""}'</td></tr>`);
+        }
+      }
+
+      const wpm = Math.round((typedWords.length / timeTaken) * 60);
+      const accuracy = Math.round((correctCount / quoteWords.length) * 100);
+
+      let mistakeTable = "";
+      if (wrongWords.length > 0) {
+        mistakeTable = `
+          <table border="1" style="margin:auto; margin-top:10px; border-collapse:collapse;">
+            <tr style="background:#f8d7da; font-weight:bold;">
+              <th style="padding:6px 12px;">No.</th>
+              <th style="padding:6px 12px;">Your Word</th>
+              <th style="padding:6px 12px;">Correct Word</th>
+            </tr>
+            ${wrongWords.join("")}
+          </table>
+        `;
+        // Add row styling for better visibility
+        mistakeTable = mistakeTable.replace(/<tr><td/g, '<tr style="background:#fff;"><td');
+      } else {
+        mistakeTable = "<b>No Mistakes!</b>";
+      }
+
+      statsDiv.innerHTML = `⏱ Time: ${Math.round(timeTaken)}s <br> 📄 WPM: ${wpm} <br> 🎯 Accuracy: ${accuracy}%<br><br>❌ Mistakes:<br>${mistakeTable}`;
+      input.disabled = true;
+      isRunning = false;
+      clearInterval(countdown);
+    }
+  </script>
+
+  <footer style="margin-top:40px; text-align:center; background:#222; color:#fff; padding:16px 0; border-radius:8px;">
+  Developed by <b>RS GULSHAN PRAJAPATI</b>
+</footer>
+</body>
+</html>
