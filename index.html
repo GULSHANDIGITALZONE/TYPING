@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Typing Test</title>
   <link rel="shortcut icon" href="./ज्ञान की बाते logo 1.png" type="image/x-icon">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+     integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./style.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -81,8 +85,17 @@
 
     <div style="font-size:1rem;">
       <a href="mailto:gulshankumardariyapur85885@gmail.com" style="position: fixed; bottom: 10px; right: 10px;"><img style="width: 80px; height: auto; border-radius: 50%;" src="./smartparcel-mail.gif" alt=""></a>
-    </div>
+      <button style="color: rgb(0, 47, 255); font-size: 200%; border-radius: 20%;" onclick="showAbout()"><i  class="fa-solid fa-circle-question"></i>&<i class="fa-solid fa-circle-info"></i></button>
   </div>
+   <div id="aboutModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAbout()">&times; Less </span>
+                    <img class="ruls" src="./ruls.jpg" alt="">
+                                   
+                   
+                </div>
+            </div>
+            <script src="./script.js"></script>
   <div id="level">
     <label for="levelSelect">Select Level:</label>
     <select id="levelSelect">
@@ -337,6 +350,8 @@
       clearInterval(countdown);
     }
   </script>
+
+
 
   <footer style="margin-top:40px; text-align:center; background:#222; color:#fff; padding:16px 0; border-radius:8px;">
   Developed by <b>RS GULSHAN PRAJAPATI</b>
